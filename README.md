@@ -15,7 +15,7 @@ world := ecs.World{}
 world.AddSystem(ExampleSystem{})
 world.Start()
 
-comps, found := world.Query(systems.RenderableComponet{}.Type())
+comps, found := world.Query(RenderableComponent{}.Type())
 if found {
     for _, compList := range comps {
         for _, comp := range compList {
@@ -24,7 +24,7 @@ if found {
     }
 }
 
-entities, comps, found := world.QueryWithEntity(RenderableCompomnent{}.Type())
+entities, comps, found := world.QueryWithEntity(RenderableComponent{}.Type())
 if found {
     for i, e := range entities {
         fmt.Println("Entity: ", e.Name())
