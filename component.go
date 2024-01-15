@@ -4,12 +4,13 @@ import (
 	"reflect"
 )
 
-type ComponentData interface{}
+type Data interface{}
 
 type Component interface {
+	Id() int
 	Name() string
 	Update()
-	Data() ComponentData
+	Data() Data
 	Type() reflect.Type
 }
 
