@@ -5,12 +5,13 @@ import (
 )
 
 type Entity struct {
+	id         int
 	name       string
 	components []Component
 }
 
-func NewEntity(name string, components ...Component) Entity {
-	return Entity{name, components}
+func NewEntity(id int, name string, components ...Component) Entity {
+	return Entity{id, name, components}
 }
 
 func (e Entity) Name() string {
@@ -23,6 +24,15 @@ func (e *Entity) AddComponent(component Component) {
 
 func (e Entity) Components() []Component {
 	return e.components
+}
+
+func (e Entity) HasComponent(t reflect.Type) bool {
+	for _, component := range e.components {
+		if (component).Type() == t {
+			return true
+		}
+	}
+	return false
 }
 
 func (e Entity) HasComponents(types ...reflect.Type) bool {
@@ -39,5 +49,5 @@ func (e Entity) HasComponents(types ...reflect.Type) bool {
 			}
 		}
 	}
-	return true
+	return numTypes == 0
 }
