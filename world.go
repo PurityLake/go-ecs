@@ -39,15 +39,15 @@ func (world World) QueryWithEntity(types ...reflect.Type) ([]Entity, [][]Compone
 	}
 
 	for _, e := range world.entities {
-		var components []Component
+		components := make([]Component, 0, numTypes)
 		if len(e.Components()) < numTypes {
 			return nil, nil, false
 		}
 	ComponentLoop:
 		for _, c := range e.Components() {
-			for _, t := range types {
+			for i, t := range types {
 				if ComponentTypeIsA(c, t) {
-					components = append(components, c)
+					components[i] = c
 					if len(components) == numTypes {
 						break ComponentLoop
 					}
@@ -75,15 +75,15 @@ func (w World) Query(types ...reflect.Type) ([][]Component, bool) {
 	}
 
 	for _, e := range w.entities {
-		var components []Component
+		components := make([]Component, 0, numTypes)
 		if len(e.Components()) < numTypes {
 			return nil, false
 		}
 	ComponentLoop:
 		for _, c := range e.Components() {
-			for _, t := range types {
+			for i, t := range types {
 				if ComponentTypeIsA(c, t) {
-					components = append(components, c)
+					components[i] = c
 					if len(components) == numTypes {
 						break ComponentLoop
 					}
