@@ -4,7 +4,7 @@ in the early stages of development
 
 # Roadmap
 - [ ] Add tests
-- [ ] Add way to call functions with queries as paramets
+- [ ] Add way to call functions with queries as parameters
 - [ ] Add conditional running of functions
 
 # Examples
