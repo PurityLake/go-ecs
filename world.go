@@ -1,7 +1,5 @@
 package ecs
 
-import "reflect"
-
 type World struct {
 	systems  []System
 	entities []Entity
@@ -29,34 +27,20 @@ func (w *World) AddEntity(name string, components ...Component) {
 	w.currId++
 }
 
-func (world World) QueryWithEntity(types ...reflect.Type) ([]Entity, [][]Component, bool) {
+func (world World) QueryWithEntity(query Query) ([]Entity, [][]Component, bool) {
 	var entities []Entity
 	var allComponents [][]Component
 
-	numTypes := len(types)
+	numTypes := query.numTypes
 	if numTypes == 0 {
 		return nil, nil, false
 	}
 
 	for _, e := range world.entities {
-		components := make([]Component, 0, numTypes)
-		if len(e.Components()) < numTypes {
-			return nil, nil, false
-		}
-	ComponentLoop:
-		for _, c := range e.Components() {
-			for i, t := range types {
-				if ComponentTypeIsA(c, t) {
-					components[i] = c
-					if len(components) == numTypes {
-						break ComponentLoop
-					}
-				}
-			}
-		}
-		if len(components) == numTypes {
-			allComponents = append(allComponents, components)
+		components, found := query.Match(&e)
+		if found {
 			entities = append(entities, e)
+			allComponents = append(allComponents, components)
 		}
 	}
 
@@ -66,31 +50,17 @@ func (world World) QueryWithEntity(types ...reflect.Type) ([]Entity, [][]Compone
 	return entities, allComponents, true
 }
 
-func (w World) Query(types ...reflect.Type) ([][]Component, bool) {
+func (w World) Query(query Query) ([][]Component, bool) {
 	var allComponents [][]Component
 
-	numTypes := len(types)
+	numTypes := query.numTypes
 	if numTypes == 0 {
 		return nil, false
 	}
 
 	for _, e := range w.entities {
-		components := make([]Component, 0, numTypes)
-		if len(e.Components()) < numTypes {
-			return nil, false
-		}
-	ComponentLoop:
-		for _, c := range e.Components() {
-			for i, t := range types {
-				if ComponentTypeIsA(c, t) {
-					components[i] = c
-					if len(components) == numTypes {
-						break ComponentLoop
-					}
-				}
-			}
-		}
-		if len(components) == numTypes {
+		components, found := query.Match(&e)
+		if found {
 			allComponents = append(allComponents, components)
 		}
 	}

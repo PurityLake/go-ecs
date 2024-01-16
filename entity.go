@@ -1,8 +1,6 @@
 package ecs
 
-import (
-	"reflect"
-)
+import "reflect"
 
 type Entity struct {
 	id         int
