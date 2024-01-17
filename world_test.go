@@ -65,8 +65,8 @@ func TestQueryWithEntities(t *testing.T) {
 		}
 	}
 
-	query1 := ecs.NewQuery(ecs.CompType[Position]())
-	query2 := ecs.NewQuery(ecs.CompType[Position](), ecs.CompType[Renderable]())
+	query1 := ecs.NewQuery(ecs.Type[Position]())
+	query2 := ecs.NewQuery(ecs.Type[Position](), ecs.Type[Renderable]())
 
 	{
 		entities, components, found := world.QueryWithEntity(query1)
@@ -97,13 +97,13 @@ func TestQuery(t *testing.T) {
 		}
 	}
 
-	query1 := ecs.NewQuery(ecs.CompType[Position]())
-	query2 := ecs.NewQuery(ecs.CompType[Position](), ecs.CompType[Renderable]())
+	query1 := ecs.NewQuery(ecs.Type[Position]())
+	query2 := ecs.NewQuery(ecs.Type[Position](), ecs.Type[Renderable]())
 
 	{
 		components, found := world.Query(query1)
 		if !found || len(components) != 10 {
-			t.Logf("%s != %s", ecs.CompType[Position](), Position{}.Type())
+			t.Logf("%s != %s", ecs.Type[Position](), Position{}.Type())
 			t.Fatalf("found = %t (expected true) len(components) = %d (expected 10)", found, len(components))
 		}
 	}
@@ -136,8 +136,8 @@ func TestQueryState(t *testing.T) {
 	world.AddState(MyState{69})
 	world.AddState(TheState{420})
 
-	query1 := ecs.NewQuery(ecs.StateType[MyState]())
-	query2 := ecs.NewQuery(ecs.StateType[TheState]())
+	query1 := ecs.NewQuery(ecs.Type[MyState]())
+	query2 := ecs.NewQuery(ecs.Type[TheState]())
 
 	{
 		states, found := world.QueryState(query1)
