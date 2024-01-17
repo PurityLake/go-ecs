@@ -113,3 +113,25 @@ func TestQuery(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkQuery(b *testing.B) {
+	world := ecs.World{}
+
+	for i := 0; i < b.N; i++ {
+		world.AddEntity(fmt.Sprintf("%d", i), Position{X: 0, Y: 0}, Renderable{W: 10, H: 10})
+	}
+	query := ecs.NewQuery(Position{}.Type(), Renderable{}.Type())
+	b.ResetTimer()
+	world.Query(query)
+}
+
+func BenchmarkQueryWithEntity(b *testing.B) {
+	world := ecs.World{}
+
+	for i := 0; i < b.N; i++ {
+		world.AddEntity(fmt.Sprintf("%d", i), Position{X: 0, Y: 0}, Renderable{W: 10, H: 10})
+	}
+	query := ecs.NewQuery(Position{}.Type(), Renderable{}.Type())
+	b.ResetTimer()
+	world.QueryWithEntity(query)
+}
