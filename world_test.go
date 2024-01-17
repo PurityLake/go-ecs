@@ -65,8 +65,8 @@ func TestQueryWithEntities(t *testing.T) {
 		}
 	}
 
-	query1 := ecs.NewQuery(Position{}.Type())
-	query2 := ecs.NewQuery(Position{}.Type(), Renderable{}.Type())
+	query1 := ecs.NewQuery(ecs.CompType[Position]())
+	query2 := ecs.NewQuery(ecs.CompType[Position](), ecs.CompType[Renderable]())
 
 	{
 		entities, components, found := world.QueryWithEntity(query1)
@@ -97,12 +97,13 @@ func TestQuery(t *testing.T) {
 		}
 	}
 
-	query1 := ecs.NewQuery(Position{}.Type())
-	query2 := ecs.NewQuery(Position{}.Type(), Renderable{}.Type())
+	query1 := ecs.NewQuery(ecs.CompType[Position]())
+	query2 := ecs.NewQuery(ecs.CompType[Position](), ecs.CompType[Renderable]())
 
 	{
 		components, found := world.Query(query1)
 		if !found || len(components) != 10 {
+			t.Logf("%s != %s", ecs.CompType[Position](), Position{}.Type())
 			t.Fatalf("found = %t (expected true) len(components) = %d (expected 10)", found, len(components))
 		}
 	}
