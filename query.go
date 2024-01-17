@@ -13,6 +13,15 @@ func NewQuery(types ...reflect.Type) Query {
 	return Query{types, len(types)}
 }
 
+func (query Query) MatchState(world World, state State) (State, bool) {
+	for _, other := range world.state {
+		if reflect.TypeOf(state) == reflect.TypeOf(other) {
+			return other, true
+		}
+	}
+	return nil, false
+}
+
 func (query Query) Match(entity *Entity) ([]Component, bool) {
 	if len(entity.components) < query.numTypes {
 		return nil, false

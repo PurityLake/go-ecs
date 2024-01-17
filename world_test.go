@@ -115,6 +115,44 @@ func TestQuery(t *testing.T) {
 	}
 }
 
+type MyState struct {
+	val int
+}
+
+func (state MyState) GetData() ecs.StateData {
+	return state
+}
+
+type TheState struct {
+	val int
+}
+
+func (state TheState) GetData() ecs.StateData {
+	return state
+}
+
+func TestQueryState(t *testing.T) {
+	world := ecs.World{}
+	world.AddState(MyState{69})
+	world.AddState(TheState{420})
+
+	query1 := ecs.NewQuery(ecs.StateType[MyState]())
+	query2 := ecs.NewQuery(ecs.StateType[TheState]())
+
+	{
+		states, found := world.QueryState(query1)
+		if !found || len(states) != 1 {
+			t.Fatalf("found = %t (expected true) len(states) = %d (expected 1)", found, len(states))
+		}
+	}
+	{
+		states, found := world.QueryState(query2)
+		if !found || len(states) != 1 {
+			t.Fatalf("found = %t (expected true) len(states) = %d (expected 1)", found, len(states))
+		}
+	}
+}
+
 func BenchmarkQuery(b *testing.B) {
 	world := ecs.World{}
 

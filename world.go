@@ -3,6 +3,7 @@ package ecs
 type World struct {
 	systems  []System
 	entities []Entity
+	state    []State
 	currId   int
 }
 
@@ -25,6 +26,36 @@ func (w *World) Update() {
 func (w *World) AddEntity(name string, components ...Component) {
 	w.entities = append(w.entities, NewEntity(w.currId, name, components...))
 	w.currId++
+}
+
+func (w *World) AddState(state State) {
+	w.state = append(w.state, state)
+}
+
+func (world World) QueryState(query Query) ([]State, bool) {
+	var states []State
+
+	numTypes := query.numTypes
+	if numTypes == 0 {
+		return nil, false
+	}
+
+	count := 0
+	for _, s := range world.state {
+		state, found := query.MatchState(world, s)
+		if found {
+			states = append(states, state)
+			count++
+			if numTypes == count {
+				break
+			}
+		}
+	}
+
+	if len(states) == 0 {
+		return nil, false
+	}
+	return states, true
 }
 
 func (world World) QueryWithEntity(query Query) ([]Entity, [][]Component, bool) {
