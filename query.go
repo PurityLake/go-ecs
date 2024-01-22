@@ -47,17 +47,21 @@ ComponentLoop:
 	return components, true
 }
 
-func (query Query) MatchMut(entity *Entity) ([]*Component, bool) {
+func (query Query) MatchMut(entity *Entity) ([]ComponentRef, bool) {
 	if len(entity.components) < query.numTypes {
 		return nil, false
 	}
-	components := make([]*Component, query.numTypes)
 	numFound := 0
+	components := make([]ComponentRef, query.numTypes)
 ComponentLoop:
-	for _, c := range entity.Components() {
-		for i, t := range query.types {
-			if ComponentTypeIsA(c, t) {
-				components[i] = &c
+	for i := 0; i < entity.NumComponents(); i++ {
+		c, err := entity.MutComponent(i)
+		if err != nil {
+			return nil, false
+		}
+		for j, t := range query.types {
+			if ComponentTypeIsA(*c, t) {
+				components[j] = ComponentRef{Index: i, Type: (*c).Type()}
 				numFound++
 				if numFound == query.numTypes {
 					break ComponentLoop

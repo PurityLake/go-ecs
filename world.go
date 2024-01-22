@@ -125,19 +125,20 @@ func (w World) Query(query Query) ([][]Component, bool) {
 	return allComponents, true
 }
 
-func (world World) QueryWithEntityMut(query Query) ([]*Entity, [][]*Component, bool) {
+func (world World) QueryWithEntityMut(query Query) ([]*Entity, [][]ComponentRef, bool) {
 	var entities []*Entity
-	var allComponents [][]*Component
+	var allComponents [][]ComponentRef
 
 	numTypes := query.numTypes
 	if numTypes == 0 {
 		return nil, nil, false
 	}
 
-	for _, e := range world.entities {
-		components, found := query.MatchMut(&e)
+	for i := 0; i < len(world.entities); i++ {
+		e := &world.entities[i]
+		components, found := query.MatchMut(e)
 		if found {
-			entities = append(entities, &e)
+			entities = append(entities, e)
 			allComponents = append(allComponents, components)
 		}
 	}
@@ -146,24 +147,4 @@ func (world World) QueryWithEntityMut(query Query) ([]*Entity, [][]*Component, b
 		return nil, nil, false
 	}
 	return entities, allComponents, true
-}
-
-func (w World) QueryMut(query Query) ([][]*Component, bool) {
-	var allComponents [][]*Component
-
-	numTypes := query.numTypes
-	if numTypes == 0 {
-		return nil, false
-	}
-
-	for _, e := range w.entities {
-		components, found := query.MatchMut(&e)
-		if found {
-			allComponents = append(allComponents, components)
-		}
-	}
-	if len(allComponents) == 0 {
-		return nil, false
-	}
-	return allComponents, true
 }

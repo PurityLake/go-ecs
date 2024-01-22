@@ -1,13 +1,35 @@
-package ecs_test
+package components
 
 import (
 	"reflect"
 
-	"github.com/PurityLake/go-ecs"
+	ecs "github.com/PurityLake/go-ecs"
 )
 
 // ############
 // Components
+
+type Player struct {
+	id int
+}
+
+func (p Player) Id() int {
+	return p.id
+}
+
+func (p Player) Name() string {
+	return "player"
+}
+
+func (p Player) Update() {}
+
+func (p Player) Data() ecs.Data {
+	return p
+}
+
+func (p Player) Type() reflect.Type {
+	return reflect.TypeOf(p)
+}
 
 type Position struct {
 	id   int
@@ -129,7 +151,7 @@ func (eswq ExampleSystemWithQuery) Setup(world *ecs.World) {
 // States
 
 type MyState struct {
-	val int
+	Val int
 }
 
 func (state MyState) GetData() ecs.StateData {
@@ -137,7 +159,7 @@ func (state MyState) GetData() ecs.StateData {
 }
 
 type TheState struct {
-	val int
+	Val int
 }
 
 func (state TheState) GetData() ecs.StateData {
