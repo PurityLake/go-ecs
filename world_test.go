@@ -2,57 +2,10 @@ package ecs_test
 
 import (
 	"fmt"
-	"reflect"
 	"testing"
 
 	"github.com/PurityLake/go-ecs"
 )
-
-type Position struct {
-	id   int
-	X, Y int
-}
-
-func (p Position) Id() int {
-	return p.id
-}
-
-func (p Position) Name() string {
-	return "position"
-}
-
-func (p Position) Update() {}
-
-func (p Position) Data() ecs.Data {
-	return p
-}
-
-func (p Position) Type() reflect.Type {
-	return reflect.TypeOf(p)
-}
-
-type Renderable struct {
-	id   int
-	W, H int
-}
-
-func (r Renderable) Id() int {
-	return r.id
-}
-
-func (r Renderable) Name() string {
-	return "renderable"
-}
-
-func (r Renderable) Update() {}
-
-func (r Renderable) Data() ecs.Data {
-	return r
-}
-
-func (r Renderable) Type() reflect.Type {
-	return reflect.TypeOf(r)
-}
 
 func TestQueryWithEntities(t *testing.T) {
 	world := ecs.World{}
