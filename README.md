@@ -79,6 +79,7 @@ func (s ExampleSystem) Setup(world *ecs.World) {
 }
 
 func (s ExampleSystem) Update(world *ecs.World) {
+	// do a query
 }
 ```
 
