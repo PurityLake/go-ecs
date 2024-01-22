@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/PurityLake/go-ecs"
-	"github.com/PurityLake/go-ecs/components"
+	"github.com/PurityLake/go-ecs/test/components"
 )
 
 func TestQueryWithEntities(t *testing.T) {
