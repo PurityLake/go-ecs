@@ -88,33 +88,23 @@ func TestQueryWithEntitiesMut(t *testing.T) {
 		t.Fatalf("found = %t (expected true) len(components) = %d (expected 10)", foundMut, len(componentsMut))
 	}
 
-	for i := 0; i < len(entities); i++ {
-		for _, cList := range componentsMut {
-			for _, comp := range cList {
-				c, err := entities[i].GetComponent(comp)
-				if err != nil {
-					t.Fatal(err)
-				}
-				switch comp.Type {
-				case ecs.Type[components.Position]():
-					pos, ok := (*c).(components.Position)
-					if !ok {
-						t.Fatal("unexpected component type", comp.Type)
-					}
-					pos.X = 1
-					pos.Y = 1
-					entities[i].SetComponent(comp, pos)
-				case ecs.Type[components.Renderable]():
-					rend, ok := (*c).(components.Renderable)
-					if !ok {
-						t.Fatal("unexpected component type", comp.Type)
-					}
-					rend.W = 1
-					rend.H = 1
-					entities[i].SetComponent(comp, rend)
-				default:
-					t.Fatal("unexpected component type", comp.Type)
-				}
+	for i, entity := range entities {
+		for _, comp := range componentsMut[i] {
+			c, err := entity.GetComponent(comp)
+			if err != nil {
+				t.Fatal(err)
+			}
+			switch c := (*c).(type) {
+			case components.Position:
+				c.X = 1
+				c.Y = 1
+				entity.SetComponent(comp, c)
+			case components.Renderable:
+				c.W = 1
+				c.H = 1
+				entity.SetComponent(comp, c)
+			default:
+				t.Fatal("unexpected component type", comp.Type)
 			}
 		}
 	}
