@@ -1,6 +1,11 @@
 package ecs
 
 type System interface {
-	Setup(world *World)
+	Id() int
 	Update(world *World)
+	Setup(world *World)
+}
+
+type SystemBase struct {
+	Id int
 }

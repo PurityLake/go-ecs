@@ -7,8 +7,32 @@ type World struct {
 	currId   int
 }
 
+func (w *World) GetNextId() int {
+	id := w.currId
+	w.currId++
+	return id
+}
+
 func (w *World) AddSystem(system System) {
+	system.Setup(w)
 	w.systems = append(w.systems, system)
+}
+
+func (w *World) AddSystems(systems ...System) {
+	w.systems = append(w.systems, systems...)
+}
+
+func (w *World) RemoveSystem(system System) {
+	idx_to_delete := -1
+	for i, s := range w.systems {
+		if s.Id() == system.Id() {
+			idx_to_delete = i
+			break
+		}
+	}
+	if idx_to_delete >= 0 {
+		w.systems = append(w.systems[:idx_to_delete], w.systems[idx_to_delete+1:]...)
+	}
 }
 
 func (w *World) Start() {
