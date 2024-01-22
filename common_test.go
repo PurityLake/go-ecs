@@ -124,3 +124,22 @@ func (eswq ExampleSystemWithQuery) Id() int {
 
 func (eswq ExampleSystemWithQuery) Setup(world *ecs.World) {
 }
+
+// ############
+// States
+
+type MyState struct {
+	val int
+}
+
+func (state MyState) GetData() ecs.StateData {
+	return state
+}
+
+type TheState struct {
+	val int
+}
+
+func (state TheState) GetData() ecs.StateData {
+	return state
+}

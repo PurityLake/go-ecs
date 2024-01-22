@@ -124,3 +124,46 @@ func (w World) Query(query Query) ([][]Component, bool) {
 	}
 	return allComponents, true
 }
+
+func (world World) QueryWithEntityMut(query Query) ([]*Entity, [][]*Component, bool) {
+	var entities []*Entity
+	var allComponents [][]*Component
+
+	numTypes := query.numTypes
+	if numTypes == 0 {
+		return nil, nil, false
+	}
+
+	for _, e := range world.entities {
+		components, found := query.MatchMut(&e)
+		if found {
+			entities = append(entities, &e)
+			allComponents = append(allComponents, components)
+		}
+	}
+
+	if len(entities) == 0 {
+		return nil, nil, false
+	}
+	return entities, allComponents, true
+}
+
+func (w World) QueryMut(query Query) ([][]*Component, bool) {
+	var allComponents [][]*Component
+
+	numTypes := query.numTypes
+	if numTypes == 0 {
+		return nil, false
+	}
+
+	for _, e := range w.entities {
+		components, found := query.MatchMut(&e)
+		if found {
+			allComponents = append(allComponents, components)
+		}
+	}
+	if len(allComponents) == 0 {
+		return nil, false
+	}
+	return allComponents, true
+}
