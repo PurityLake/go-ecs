@@ -37,6 +37,7 @@ ComponentLoop:
 				if numFound == query.numTypes {
 					break ComponentLoop
 				}
+				break
 			}
 		}
 	}
@@ -61,6 +62,7 @@ ComponentLoop:
 				if numFound == query.numTypes {
 					break ComponentLoop
 				}
+				break
 			}
 		}
 	}
