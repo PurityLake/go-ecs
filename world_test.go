@@ -80,22 +80,37 @@ func TestQueryWithEntitiesMut(t *testing.T) {
 	}
 
 	query1 := ecs.NewQuery(ecs.Type[Position]())
-	query2 := ecs.NewQuery(ecs.Type[Position](), ecs.Type[Renderable]())
 
-	{
-		entities, components, found := world.QueryWithEntityMut(query1)
-		if !found || len(entities) != 10 || len(components) != 10 {
-			t.Fatalf(
-				"found = %t (expected true) len(entities) = %d (expected 10) len(components) = %d (expected 10)",
-				found, len(entities), len(components))
+	entitiesMut, componentsMut, foundMut := world.QueryWithEntityMut(query1)
+	if !foundMut || len(entitiesMut) != 10 || len(componentsMut) != 10 {
+		t.Fatalf(
+			"found = %t (expected true) len(entities) = %d (expected 10) len(components) = %d (expected 10)",
+			foundMut, len(entitiesMut), len(componentsMut))
+	}
+
+	for _, cList := range componentsMut {
+		for _, comp := range cList {
+			switch c := (*comp).(type) {
+			case *Position:
+				c.X = 1
+				c.Y = 1
+			}
 		}
 	}
-	{
-		entities, components, found := world.QueryWithEntityMut(query2)
-		if !found || len(entities) != 5 || len(components) != 5 {
-			t.Fatalf(
-				"found = %t (expected true) len(entities) = %d (expected 10) len(components) = %d (expected 10)",
-				found, len(entities), len(components))
+
+	components, found := world.Query(query1)
+	if !found || len(components) != 10 {
+		t.Fatalf("found = %t (expected true) len(components) = %d (expected 10)", found, len(components))
+	}
+
+	for _, cList := range components {
+		for _, comp := range cList {
+			switch c := comp.(type) {
+			case *Position:
+				if c.X != 1 || c.Y != 1 {
+					t.Fatalf("Position is meant to be (1, 1) got (%d, %d)", c.X, c.Y)
+				}
+			}
 		}
 	}
 }
@@ -112,19 +127,36 @@ func TestQueryMut(t *testing.T) {
 	}
 
 	query1 := ecs.NewQuery(ecs.Type[Position]())
-	query2 := ecs.NewQuery(ecs.Type[Position](), ecs.Type[Renderable]())
 
-	{
-		components, found := world.QueryMut(query1)
-		if !found || len(components) != 10 {
-			t.Logf("%s != %s", ecs.Type[Position](), Position{}.Type())
-			t.Fatalf("found = %t (expected true) len(components) = %d (expected 10)", found, len(components))
+	componentsMut, foundMut := world.QueryMut(query1)
+	if !foundMut || len(componentsMut) != 10 {
+		t.Logf("%s != %s", ecs.Type[Position](), Position{}.Type())
+		t.Fatalf("found = %t (expected true) len(components) = %d (expected 10)", foundMut, len(componentsMut))
+	}
+
+	for _, cList := range componentsMut {
+		for _, comp := range cList {
+			switch c := (*comp).(type) {
+			case *Position:
+				c.X = 1
+				c.Y = 1
+			}
 		}
 	}
-	{
-		components, found := world.QueryMut(query2)
-		if !found || len(components) != 5 {
-			t.Fatalf("found = %t (expected true) len(components) = %d (expected 5)", found, len(components))
+
+	components, found := world.Query(query1)
+	if !found || len(components) != 10 {
+		t.Fatalf("found = %t (expected true) len(components) = %d (expected 10)", found, len(components))
+	}
+
+	for _, cList := range components {
+		for _, comp := range cList {
+			switch c := comp.(type) {
+			case *Position:
+				if c.X != 1 || c.Y != 1 {
+					t.Fatalf("Position is meant to be (1, 1) got (%d, %d)", c.X, c.Y)
+				}
+			}
 		}
 	}
 }
