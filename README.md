@@ -39,25 +39,29 @@ if found {
     }
 }
 
-// this query only returns components of the entites that match
-comps, found := world.QueryMut(query)
-if found {
-    for _, compList := range comps {
-        for _, comp := range compList {
-            fmt.Println("Component: ", comp.Name())
-        }
-    }
-}
-
 // this query returns entites and it's components
 entities, comps, found := world.QueryWithEntityMut(query)
 if found {
-    for i, e := range entities {
-        fmt.Println("Entity: ", e.Name())
-        for _, comp := range comps[i] {
-            fmt.Println("Component: ", comp.Name())
-        }
-    }
+    for i, entity := range entities {
+		for _, comp := range componentsMut[i] {
+			c, err := entity.GetComponent(comp)
+			if err != nil {
+				t.Fatal(err)
+			}
+			switch c := (*c).(type) {
+			case components.Position:
+				c.X = 1
+				c.Y = 1
+				entity.SetComponent(comp, c)
+			case components.Renderable:
+				c.W = 1
+				c.H = 1
+				entity.SetComponent(comp, c)
+			default:
+				t.Fatal("unexpected component type", comp.Type)
+			}
+		}
+	}
 }
 ```
 
