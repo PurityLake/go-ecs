@@ -3,7 +3,8 @@ An implementation of the ECS design pattern in Go. Currently
 in the early stages of development
 
 # Roadmap
-- [ ] Add tests
+- [ ] Add tests (ongoing)
+- [x] Add a Query object to reuse queries (ecs.Query)
 - [ ] Add way to call functions with queries as parameters
 - [ ] Add conditional running of functions
 
@@ -15,7 +16,10 @@ world := ecs.World{}
 world.AddSystem(ExampleSystem{})
 world.Start()
 
-comps, found := world.Query(RenderableComponent{}.Type())
+query := ecs.NewQuery(ecs.Type[Renderable]())
+
+// this query only returns components of the entites that match
+comps, found := world.Query(query)
 if found {
     for _, compList := range comps {
         for _, comp := range compList {
@@ -24,7 +28,29 @@ if found {
     }
 }
 
-entities, comps, found := world.QueryWithEntity(RenderableComponent{}.Type())
+// this query returns entites and it's components
+entities, comps, found := world.QueryWithEntity(query)
+if found {
+    for i, e := range entities {
+        fmt.Println("Entity: ", e.Name())
+        for _, comp := range comps[i] {
+            fmt.Println("Component: ", comp.Name())
+        }
+    }
+}
+
+// this query only returns components of the entites that match
+comps, found := world.QueryMut(query)
+if found {
+    for _, compList := range comps {
+        for _, comp := range compList {
+            fmt.Println("Component: ", comp.Name())
+        }
+    }
+}
+
+// this query returns entites and it's components
+entities, comps, found := world.QueryWithEntityMut(query)
 if found {
     for i, e := range entities {
         fmt.Println("Entity: ", e.Name())
@@ -38,9 +64,11 @@ if found {
 ### Creating a custom System
 ```go
 type ExampleSystem struct{
+  ecs.SystemBase
   // data can go here
 }
 
+// only called by world.Start() or world.InitNew()
 func (s ExampleSystem) Setup(world *ecs.World) {
 	fmt.Println("ExampleSystem setup")
 	world.AddEntity("example", Renderable{})
