@@ -56,7 +56,7 @@ func (w *World) AddState(state State) {
 	w.state = append(w.state, state)
 }
 
-func (world World) QueryState(query Query) ([]State, bool) {
+func (w *World) QueryState(query Query) ([]State, bool) {
 	var states []State
 
 	numTypes := query.numTypes
@@ -65,8 +65,8 @@ func (world World) QueryState(query Query) ([]State, bool) {
 	}
 
 	count := 0
-	for _, s := range world.state {
-		state, found := query.MatchState(world, s)
+	for _, s := range w.state {
+		state, found := query.MatchState(*w, s)
 		if found {
 			states = append(states, state)
 			count++
@@ -82,7 +82,7 @@ func (world World) QueryState(query Query) ([]State, bool) {
 	return states, true
 }
 
-func (world World) QueryWithEntity(query Query) ([]Entity, [][]Component, bool) {
+func (w *World) QueryWithEntity(query Query) ([]Entity, [][]Component, bool) {
 	var entities []Entity
 	var allComponents [][]Component
 
@@ -91,7 +91,7 @@ func (world World) QueryWithEntity(query Query) ([]Entity, [][]Component, bool) 
 		return nil, nil, false
 	}
 
-	for _, e := range world.entities {
+	for _, e := range w.entities {
 		components, found := query.Match(&e)
 		if found {
 			entities = append(entities, e)
@@ -105,7 +105,7 @@ func (world World) QueryWithEntity(query Query) ([]Entity, [][]Component, bool) 
 	return entities, allComponents, true
 }
 
-func (w World) Query(query Query) ([][]Component, bool) {
+func (w *World) Query(query Query) ([][]Component, bool) {
 	var allComponents [][]Component
 
 	numTypes := query.numTypes
@@ -125,7 +125,7 @@ func (w World) Query(query Query) ([][]Component, bool) {
 	return allComponents, true
 }
 
-func (world World) QueryWithEntityMut(query Query) ([]*Entity, [][]ComponentRef, bool) {
+func (w *World) QueryWithEntityMut(query Query) ([]*Entity, [][]ComponentRef, bool) {
 	var entities []*Entity
 	var allComponents [][]ComponentRef
 
@@ -134,8 +134,8 @@ func (world World) QueryWithEntityMut(query Query) ([]*Entity, [][]ComponentRef,
 		return nil, nil, false
 	}
 
-	for i := 0; i < len(world.entities); i++ {
-		e := &world.entities[i]
+	for i := 0; i < len(w.entities); i++ {
+		e := &w.entities[i]
 		components, found := query.MatchMut(e)
 		if found {
 			entities = append(entities, e)
