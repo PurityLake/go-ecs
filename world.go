@@ -14,7 +14,6 @@ func (w *World) GetNextId() int {
 }
 
 func (w *World) AddSystem(system System) {
-	system.Setup(w)
 	w.systems = append(w.systems, system)
 }
 
